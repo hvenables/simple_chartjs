@@ -1,6 +1,6 @@
 require 'chartjs/version'
 require 'chartjs/engine'
-require 'chartjs/helper'
+require 'chartjs/chart_helper'
 
 module Chartjs
 

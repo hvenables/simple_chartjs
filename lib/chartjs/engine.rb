@@ -6,7 +6,7 @@ module Chartjs
 
     initializer 'helper' do
       ActiveSupport.on_load(:action_view) do
-        include Helper
+        include ChartHelper
       end
     end
   end
