@@ -22,7 +22,7 @@ module Chartjs
       )
 
       script = javascript_tag do
-        "(new SimpleChart('#{type}', '#{id}')).ajaxCall('#{url}')".html_safe
+        "(new simpleChart('#{type}', '#{id}', '#{url}')).createChart();".html_safe
       end
 
       template + script

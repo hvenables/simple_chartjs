@@ -1,3 +1,5 @@
+require 'chartjs/chart_helper'
+
 module Chartjs
   class Engine < ::Rails::Engine
     initializer 'precompile', group: :all do |app|

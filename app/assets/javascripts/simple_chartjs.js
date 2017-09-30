@@ -1,28 +1,42 @@
-function SimpleChart(type, id, url, options) {
+function simpleChart(type, id, url, options) {
+  this.ctx        = document.getElementById(id);
   this.chart_type = type;
-  this.id         = id;
   this.url        = url;
   this.options    = options;
 }
 
-SimpleChart.prototype.ajaxCall = function(url) {
+simpleChart.prototype.ajaxCall = function() {
   var chart = this
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', url);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onload = function() {
-    if (xhr.status == 200) {
-      chart.createChart(JSON.parse(xhr.responseText));
-    }
-  };
-  xhr.send();
+
+  return new Promise(function(resolve, reject) {
+
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', chart.url);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onload = function() {
+      if (xhr.status == 200) {
+        resolve(JSON.parse(xhr.response))
+      }
+    };
+    xhr.send();
+
+  });
 }
 
-SimpleChart.prototype.createChart = function(data) {
-  var ctx = document.getElementById(this.id);
-  var myChart = new Chart(ctx, {
+simpleChart.prototype.buildChart = function(data) {
+  var myChart = new Chart(this.ctx, {
     type: this.chart_type,
     data: data,
     options: this.options
+  });
+}
+
+simpleChart.prototype.createChart = function() {
+  var chart = this
+
+  chart.ajaxCall().then(function(response) {
+    chart.buildChart(response);
+  }, function(error) {
+    console.error('Vanilla Javascript failed!', error);
   });
 }
