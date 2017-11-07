@@ -14,22 +14,21 @@ module Chartjs
 
     def draw_chart(type, url, options)
       id = options.delete(:id)
-      template = chart_template(
-        id,
-        options.delete(:class),
-        options.delete(:width),
-        options.delete(:height)
-      )
+      template = chart_template(id, options.delete(:class), options.delete(:width), options.delete(:height))
 
       script = javascript_tag do
-        "(new simpleChart('#{type}', '#{id}', '#{url}')).createChart();".html_safe
+        <<-JS.squish.html_safe
+          document.addEventListener("DOMContentLoaded", function (event) {
+            new simpleChart('#{type}', '#{id}', '#{url}', '#{options.to_json}').createChart();
+          });
+        JS
       end
 
       template + script
     end
 
     def chart_template(id, klass, width, height)
-      content_tag :canvas, '', id: id, class: klass, width: width, height: height
+      content_tag :canvas, '', id: id, class: klass, style: "width: #{width}; height: #{height};"
     end
   end
 end
