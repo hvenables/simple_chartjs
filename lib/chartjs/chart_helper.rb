@@ -12,7 +12,7 @@ module Chartjs
 
     private
 
-    def draw_chart(type, url, options)
+    def draw_chart(type, url, **options)
       id = options.delete(:id)
       template = chart_template(id, options.delete(:class), options.delete(:width), options.delete(:height))
 

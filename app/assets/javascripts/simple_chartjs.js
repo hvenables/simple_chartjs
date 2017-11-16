@@ -1,8 +1,8 @@
 function simpleChart(type, id, url, options) {
-  this.ctx        = document.getElementById(id);
-  this.chart_type = type;
-  this.url        = url;
-  this.options    = options;
+  this.ctx          = document.getElementById(id);
+  this.chart_type   = type;
+  this.url          = url;
+  this.chartOptions = this.options()[id]
 }
 
 simpleChart.prototype.ajaxCall = function() {
@@ -26,8 +26,8 @@ simpleChart.prototype.ajaxCall = function() {
 simpleChart.prototype.buildChart = function(data) {
   var myChart = new Chart(this.ctx, {
     type: this.chart_type,
-    data: data,
-    options: this.options
+    data: this.format_data(data),
+    options: this.chartOptions
   });
 }
 
@@ -39,4 +39,22 @@ simpleChart.prototype.createChart = function() {
   }, function(error) {
     console.error('Vanilla Javascript failed!', error);
   });
+}
+
+simpleChart.prototype.format_data = function(dataset) {
+  for (var i = 0; i < dataset.datasets.length; i++) {
+    for (property in dataset.datasets[i]) {
+      value   = dataset.datasets[i][property]
+      new_key = this.snakeCaseToCamelCase(property)
+
+      delete dataset.datasets[i][property]
+
+      dataset.datasets[i][new_key] = value
+    }
+  }
+  return dataset
+}
+
+simpleChart.prototype.snakeCaseToCamelCase = function(string) {
+  return string.replace(/(?<=_)[a-z]/, function(l) { return l.toUpperCase() }).replace(/_/, '')
 }
