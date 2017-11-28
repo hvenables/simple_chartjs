@@ -1,9 +1,15 @@
-function simpleChart(type, id, url, dataset_properties, options) {
+function simpleChart(type, id, url, datasetProperties, configurationOptions) {
   this.ctx                = document.getElementById(id);
   this.chart_type         = type;
   this.url                = url;
-  this.dataset_properties = this.format_data(JSON.parse(dataset_properties))
-  this.chartOptions       = this.options()[id]
+  this.configureOptions(id, datasetProperties, configurationOptions);
+}
+
+simpleChart.prototype.configureOptions = function(id, datasetProperties, configurationOptions) {
+  var options = this[this.kebabCaseToCamelCase(id) + "Options"]();
+
+  this.datasetProperties = this.merge(options['datasetProperties'], this.format_data(JSON.parse(datasetProperties)));
+  this.configurationOptions = this.merge(options['options'], this.format_data(JSON.parse(configurationOptions)));
 }
 
 simpleChart.prototype.ajaxCall = function() {
@@ -28,21 +34,21 @@ simpleChart.prototype.buildChart = function(data) {
   var myChart = new Chart(this.ctx, {
     type: this.chart_type,
     data: this.formatChartData(data),
-    options: this.chartOptions
+    options: this.configurationOptions
   });
 }
 
 simpleChart.prototype.formatChartData = function(data) {
   chartData = this.format_array_data(data)
-  if(!(Object.keys(this.dataset_properties).length === 0)) {
-    for(property in this.dataset_properties) {
-      if(Array.isArray(this.dataset_properties[property])) {
-        for (var i = 0; i < this.dataset_properties[property].length; i++) {
-          chartData.datasets[i][property] = this.dataset_properties[property][i]
+  if(!(Object.keys(this.datasetProperties).length === 0)) {
+    for(property in this.datasetProperties) {
+      if(Array.isArray(this.datasetProperties[property])) {
+        for (var i = 0; i < this.datasetProperties[property].length; i++) {
+          chartData.datasets[i][property] = this.datasetProperties[property][i]
         }
       } else {
         for (var i = 0; i < chartData.datasets.length; i++) {
-          chartData.datasets[i][property] = this.dataset_properties[property]
+          chartData.datasets[i][property] = this.datasetProperties[property]
         }
       }
     }
@@ -81,4 +87,13 @@ simpleChart.prototype.format_data = function(dataset) {
 
 simpleChart.prototype.snakeCaseToCamelCase = function(string) {
   return string.replace(/(?<=_)[a-z]/, function(l) { return l.toUpperCase() }).replace(/_/, '')
+}
+
+simpleChart.prototype.kebabCaseToCamelCase = function(string) {
+  return string.replace(/(?<=-)[a-z]/, function(l) { return l.toUpperCase() }).replace(/-/, '')
+}
+
+simpleChart.prototype.merge = function(obj, src) {
+  Object.keys(src).forEach(function(key) { obj[key] = src[key]; });
+  return obj;
 }
