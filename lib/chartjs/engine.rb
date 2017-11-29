@@ -3,7 +3,11 @@ require 'chartjs/chart_helper'
 module Chartjs
   class Engine < ::Rails::Engine
     initializer 'precompile', group: :all do |app|
-      app.config.assets.precompile << proc { |path| path == "simple_chartjs.js" }
+      if defined?(Sprockets) && Gem::Version.new(Sprockets::VERSION) >= Gem::Version.new("4.0.0.beta1")
+        app.config.assets.precompile << 'simple_chartjs.js'
+      else
+        app.config.assets.precompile << proc { |path| path == 'simple_chartjs.js' }
+      end
     end
 
     initializer 'helper' do

@@ -12,14 +12,24 @@ module Chartjs
 
     private
 
-    def draw_chart(type, url, dataset_properties:, **options)
-      id = options.delete(:id)
-      template = chart_template(id, options.delete(:class), options.delete(:width), options.delete(:height))
+    def draw_chart(type, url, dataset_properties: {}, options: {}, **html_options)
+      template = chart_template(
+        html_options[:id],
+        html_options[:class],
+        html_options[:width],
+        html_options[:height]
+      )
 
       script = javascript_tag do
         <<-JS.squish.html_safe
           document.addEventListener("DOMContentLoaded", function (event) {
-            new simpleChart('#{type}', '#{id}', '#{url}', '#{dataset_properties.to_json}', '#{options.to_json}').createChart();
+            new SimpleChart(
+              '#{type}',
+              '#{html_options[:id]}',
+              '#{url}',
+              '#{dataset_properties.to_json}',
+              '#{options.to_json}'
+            ).createChart();
           });
         JS
       end
