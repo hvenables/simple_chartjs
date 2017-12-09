@@ -1,38 +1,30 @@
 function SimpleChart(type, id, url, datasetProperties, configurationOptions) {
   this.ctx                = document.getElementById(id);
-  this.chart_type         = type;
+  this.chartType          = type;
   this.url                = url;
+
   this.configureOptions(id, datasetProperties, configurationOptions);
 }
 
 SimpleChart.prototype.configureOptions = function(id, datasetProperties, configurationOptions) {
   var options = this[this.kebabCaseToCamelCase(id) + "Options"]();
 
-  this.datasetProperties = this.merge(options['datasetProperties'], this.format_data(JSON.parse(datasetProperties)));
-  this.configurationOptions = this.merge(options['options'], this.format_data(JSON.parse(configurationOptions)));
-}
+  this.datasetProperties = this.mergeObjects(
+    options['datasetProperties'],
+    this.formatRubyObject(JSON.parse(datasetProperties))
+  );
 
-SimpleChart.prototype.getData = function() {
-  var chart = this
-
-  return new Promise(function(resolve, reject) {
-
-    var xhr = new XMLHttpRequest();
-    xhr.open('GET', chart.url);
-    xhr.setRequestHeader("Content-Type", "application/json");
-    xhr.onload = function() {
-      if (xhr.status == 200) {
-        resolve(JSON.parse(xhr.response))
-      }
-    };
-    xhr.send();
-
-  });
+  this.configurationOptions = this.mergeObjects(
+    options['options'],
+    this.formatRubyObject(JSON.parse(configurationOptions))
+  );
 }
 
 SimpleChart.prototype.buildChart = function(data) {
+  var data = JSON.parse(data)
+
   var myChart = new Chart(this.ctx, {
-    type: this.chart_type,
+    type: this.chartType,
     data: this.formatChartData(data),
     options: this.configurationOptions
   });
@@ -41,15 +33,25 @@ SimpleChart.prototype.buildChart = function(data) {
 SimpleChart.prototype.createChart = function() {
   var chart = this
 
-  chart.getData().then(function(response) {
-    chart.buildChart(response);
-  }, function(error) {
-    console.error('Vanilla Javascript failed!', error);
-  });
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', chart.url);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onreadystatechange = function() {
+    if(xhr.readyState === 4) {
+      console.log("loading")
+      if(xhr.status === 200) {
+        chart.buildChart(xhr.response)
+      } else {
+        console.log('An error occurred during your xhr: ' +  xhr.status + ' ' + xhr.statusText);
+      }
+    }
+  }
+  xhr.send();
 }
 
 SimpleChart.prototype.formatChartData = function(data) {
-  chartData = this.format_array_data(data)
+  var chartData = data
+  this.formatArrayRubyObjects(chartData.datasets)
   if(!(Object.keys(this.datasetProperties).length === 0)) {
     for(property in this.datasetProperties) {
       if(Array.isArray(this.datasetProperties[property])) {
@@ -66,34 +68,37 @@ SimpleChart.prototype.formatChartData = function(data) {
   return chartData
 }
 
-SimpleChart.prototype.format_array_data = function(dataset) {
-  for (var i = 0; i < dataset.datasets.length; i++) {
-    this.format_data(dataset.datasets[i])
+SimpleChart.prototype.formatArrayRubyObjects = function(array) {
+  for (var i = 0; i < array.length; i++) {
+    this.formatRubyObject(array[i])
   }
-  return dataset
+  return array
 }
 
-SimpleChart.prototype.format_data = function(dataset) {
-  for (property in dataset) {
-    value   = dataset[property]
-    new_key = this.snakeCaseToCamelCase(property)
+SimpleChart.prototype.formatRubyObject = function(object) {
+  for (property in object) {
+    value   = object[property]
+    delete object[property]
 
-    delete dataset[property]
-
-    dataset[new_key] = value
+    newKey = this.snakeCaseToCamelCase(property)
+    object[newKey] = value
   }
-  return dataset
+  return object
 }
 
 SimpleChart.prototype.snakeCaseToCamelCase = function(string) {
-  return string.replace(/(?<=_)[a-z]/, function(l) { return l.toUpperCase() }).replace(/_/, '')
+  return string.replace(/_([a-z])/, function(_, letter) {
+    return letter.toUpperCase()
+  })
 }
 
 SimpleChart.prototype.kebabCaseToCamelCase = function(string) {
-  return string.replace(/(?<=-)[a-z]/, function(l) { return l.toUpperCase() }).replace(/-/, '')
+  return string.replace(/-([a-z])/, function(_, letter) {
+    return letter.toUpperCase()
+  })
 }
 
-SimpleChart.prototype.merge = function(obj, src) {
+SimpleChart.prototype.mergeObjects = function(obj, src) {
   Object.keys(src).forEach(function(key) { obj[key] = src[key]; });
   return obj;
 }
