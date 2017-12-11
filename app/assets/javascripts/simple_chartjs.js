@@ -23,7 +23,10 @@ SimpleChart.prototype.configureOptions = function(id, datasetProperties, configu
 SimpleChart.prototype.buildChart = function(data) {
   var data = JSON.parse(data)
 
-  var myChart = new Chart(this.ctx, {
+  this.ctx.innerHTML = '<canvas></canvas>'
+  var canvas = this.ctx.getElementsByTagName('canvas')[0]
+
+  var myChart = new Chart(canvas, {
     type: this.chartType,
     data: this.formatChartData(data),
     options: this.configurationOptions
