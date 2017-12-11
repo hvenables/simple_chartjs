@@ -1,5 +1,5 @@
 require 'chartjs/version'
-require 'chartjs/engine'
+require 'chartjs/engine' if defined?(Rails)
 
 module Chartjs
 end

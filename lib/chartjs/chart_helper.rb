@@ -38,7 +38,7 @@ module Chartjs
     end
 
     def chart_template(id, klass, width, height)
-      content_tag :canvas, '', id: id, class: klass, style: "width: #{width}; height: #{height};"
+      "<div id=#{id} class=#{klass} style='width: #{width}; height: #{height};'>Loading...<\div>".html_safe
     end
   end
 end
