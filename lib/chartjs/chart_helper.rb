@@ -1,3 +1,6 @@
+require 'json'
+require 'cgi'
+
 module Chartjs
   module ChartHelper
     CHART_TYPES = %i[
@@ -20,7 +23,7 @@ module Chartjs
         html_options[:height]
       )
 
-      script = <<-JS.squish.html_safe
+      script = <<-JS.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
         <script type="text/javascript">
           (function() {
             var initChart = function() {
@@ -51,11 +54,16 @@ module Chartjs
         </script>
       JS
 
-      template + script
+      html = template + script
+      html.respond_to?(:html_safe) ? html.html_safe : html
     end
 
     def chart_template(id, klass, width, height)
-      "<div id=#{id} class=#{klass} style='width: #{width}; height: #{height};'>Loading...</div>".html_safe
+      <<-DIV.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
+        <div id=#{CGI.escapeHTML(id)} class=#{CGI.escapeHTML(klass)} style='#{'width: ' + CGI.escapeHTML(width) + ';' if width} #{'height: ' + CGI.escapeHTML(height) + ';' if height}'>
+          Loading...
+        </div>"
+      DIV
     end
   end
 end
