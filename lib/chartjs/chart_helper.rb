@@ -20,25 +20,42 @@ module Chartjs
         html_options[:height]
       )
 
-      script = javascript_tag do
-        <<-JS.squish.html_safe
-          document.addEventListener("DOMContentLoaded", function (event) {
-            new SimpleChart(
-              '#{type}',
-              '#{html_options[:id]}',
-              '#{url}',
-              '#{dataset_properties.to_json}',
-              '#{options.to_json}'
-            ).createChart();
-          });
-        JS
-      end
+      script = <<-JS.squish.html_safe
+        <script type="text/javascript">
+          (function() {
+            var initChart = function() {
+              new SimpleChart(
+                '#{type}',
+                '#{html_options[:id]}',
+                '#{url}',
+                '#{dataset_properties.to_json}',
+                '#{options.to_json}',
+                '#{html_options.to_json}'
+              ).createChart();
+            };
+
+            if (document.addEventListener) {
+              if (typeof(Turbolinks) != 'undefined' && Turbolinks.supported) {
+                document.addEventListener("turbolinks:load", initChart, true);
+              } else {
+                document.addEventListener("load", initChart, true);
+              }
+            } else if (document.attachEvent) {
+              if (typeof(Turbolinks) != 'undefined' && Turbolinks.supported) {
+                document.attachEvent("turbolinks:load", initChart);
+              } else {
+                document.attachEvent("onload", initChart);
+              }
+            }
+          })();
+        </script>
+      JS
 
       template + script
     end
 
     def chart_template(id, klass, width, height)
-      "<div id=#{id} class=#{klass} style='width: #{width}; height: #{height};'>Loading...<\div>".html_safe
+      "<div id=#{id} class=#{klass} style='width: #{width}; height: #{height};'>Loading...</div>".html_safe
     end
   end
 end
