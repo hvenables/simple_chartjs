@@ -1,7 +1,8 @@
-function SimpleChart(type, id, url, datasetProperties, configurationOptions) {
-  this.ctx                = document.getElementById(id);
-  this.chartType          = type;
-  this.url                = url;
+function SimpleChart(type, id, url, datasetProperties, configurationOptions, HTMLOptions) {
+  this.ctx         = document.getElementById(id);
+  this.chartType   = type;
+  this.url         = url;
+  this.HTMLOptions = JSON.parse(HTMLOptions)
 
   this.configureOptions(id, datasetProperties, configurationOptions);
 }
@@ -23,7 +24,7 @@ SimpleChart.prototype.configureOptions = function(id, datasetProperties, configu
 SimpleChart.prototype.buildChart = function(data) {
   var data = JSON.parse(data)
 
-  this.ctx.innerHTML = '<canvas></canvas>'
+  this.ctx.innerHTML = this.canvas();
   var canvas = this.ctx.getElementsByTagName('canvas')[0]
 
   var myChart = new Chart(canvas, {
@@ -104,4 +105,13 @@ SimpleChart.prototype.kebabCaseToCamelCase = function(string) {
 SimpleChart.prototype.mergeObjects = function(obj, src) {
   Object.keys(src).forEach(function(key) { obj[key] = src[key]; });
   return obj;
+}
+
+SimpleChart.prototype.canvas = function() {
+  var canvas = '<canvas'
+  if(this.HTMLOptions.hasOwnProperty('width')) canvas = canvas + ' width="' + this.HTMLOptions.width.replace(/px/, '') + '"'
+  if(this.HTMLOptions.hasOwnProperty('height')) canvas = canvas + ' height="' + this.HTMLOptions.height.replace(/px/, '') + '"'
+  canvas = canvas + '></canvas>'
+
+  return canvas
 }
