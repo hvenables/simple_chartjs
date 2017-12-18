@@ -123,7 +123,9 @@ SimpleChart.prototype.mergeObjects = function(obj, src) {
 
 SimpleChart.prototype.canvas = function() {
   var canvas = '<canvas'
-  if(this.HTMLOptions.hasOwnProperty('width')) canvas = canvas + ' width="' + this.HTMLOptions.width.replace(/px/, '') + '"'
+  if(this.HTMLOptions.hasOwnProperty('width')) {
+    canvas += (this.HTMLOptions.width == '100%' ? ' width="'+ this.ctx.clientWidth + '"' : ' width="' + this.HTMLOptions.width.replace(/px/, '') + '"');
+  }
   if(this.HTMLOptions.hasOwnProperty('height')) canvas = canvas + ' height="' + this.HTMLOptions.height.replace(/px/, '') + '"'
   canvas = canvas + '></canvas>'
 

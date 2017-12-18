@@ -16,11 +16,14 @@ module Chartjs
     private
 
     def draw_chart(type, url, dataset_properties: {}, options: {}, **html_options)
+      html_options = configure_html_options(html_options)
+
       template = chart_template(
         html_options[:id],
         html_options[:class],
         html_options[:width],
-        html_options[:height]
+        html_options[:height],
+        html_options[:data]
       )
 
       script = <<-JS.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
@@ -58,17 +61,24 @@ module Chartjs
       html.respond_to?(:html_safe) ? html.html_safe : html
     end
 
-    def chart_template(id, klass, width, height)
+    def configure_html_options(html_options)
+      html_options[:id]     ||= "chart-#{chart_id}"
+      html_options[:width]  ||= '100%'
+      html_options[:height] ||= '300px'
+      html_options
+    end
+
+    def chart_template(id, klass, width, height, data)
       <<-DIV.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
-        <div id=#{ERB::Util.html_escape(id)} class=#{ERB::Util.html_escape(klass)} #{chart_styling(width, height)}>
+        <div id='#{ERB::Util.html_escape(id)}' class='#{ERB::Util.html_escape(klass)}' #{data_attributes(data)} #{chart_styling(width, height)}>
           Loading...
         </div>
       DIV
     end
 
     def chart_styling(width, height)
-      width = ERB::Util.html_escape(width) if width
-      height = ERB::Util.html_escape(height) if height
+      width = ERB::Util.html_escape(width)
+      height = ERB::Util.html_escape(height)
 
       <<-CSS.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
         style='
@@ -78,8 +88,22 @@ module Chartjs
           color: #999;
           font-size: 14px;
           font-family: Verdana;
+          line-height: #{height}
         '
       CSS
+    end
+
+    def data_attributes(data)
+      return unless data
+
+      data.map do |key, value|
+        "data-#{ERB::Util.html_escape(key)}='#{ERB::Util.html_escape(value)}'"
+      end.join(' ')
+    end
+
+    def chart_id
+      @chart_id ||= 0
+      @chart_id += 1
     end
   end
 end
