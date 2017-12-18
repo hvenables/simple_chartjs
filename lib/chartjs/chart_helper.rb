@@ -86,13 +86,13 @@ module Chartjs
 
       <<-CSS.squish
         style="
-          #{'width: ' + width + ';' if width}
-          #{'height: ' + height + ';' if height}
+          #{'width: ' + width + ';'}
+          #{'height: ' + height + ';'}
           text-align: center;
           color: #999;
           font-size: 14px;
           font-family: Verdana;
-          line-height: #{height}
+          #{'line-height: ' + height + ';'}
         "
       CSS
     end

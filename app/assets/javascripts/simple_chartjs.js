@@ -135,8 +135,8 @@ SimpleChart.prototype.mergeObjects = function(obj, src) {
 
 SimpleChart.prototype.canvas = function() {
   var canvas = '<canvas'
-  canvas += (this.width == '100%' ? ' width="'+ this.ctx.clientWidth + '"' : ' width="' + this.width.replace(/px/, '') + '"');
-  canvas += ' height="' + this.height.replace(/px/, '') + '"'
+  canvas += ' width="'+ this.ctx.clientWidth + '"';
+  canvas += ' height="' + this.ctx.clientHeight + '"';
   canvas += '></canvas>'
 
   return canvas
