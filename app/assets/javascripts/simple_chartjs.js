@@ -4,21 +4,35 @@ function SimpleChart(type, id, url, datasetProperties, configurationOptions, HTM
   this.url         = url;
   this.HTMLOptions = JSON.parse(HTMLOptions)
 
-  this.configureOptions(id, datasetProperties, configurationOptions);
+  this.assignOptions(datasetProperties, configurationOptions);
 }
 
-SimpleChart.prototype.configureOptions = function(id, datasetProperties, configurationOptions) {
-  var options = this[this.kebabCaseToCamelCase(id) + "Options"]();
+SimpleChart.prototype.assignOptions = function(datasetProperties, configurationOptions) {
+  [this.datasetProperties, this.configurationOptions] = this.configureOptions(datasetProperties, configurationOptions)
+}
 
-  this.datasetProperties = this.mergeObjects(
-    options['datasetProperties'],
-    this.formatRubyObject(JSON.parse(datasetProperties))
-  );
+SimpleChart.prototype.configureOptions = function(datasetProperties, configurationOptions) {
+  var optionMethod = this.ctx.dataset['options']
 
-  this.configurationOptions = this.mergeObjects(
-    options['options'],
-    this.formatRubyObject(JSON.parse(configurationOptions))
-  );
+  if(typeof(optionMethod) != "undefined") {
+    var options = this[this.kebabCaseToCamelCase(optionMethod) + "Options"]();
+
+    return [
+      this.mergeObjects(
+        options['datasetProperties'],
+        this.formatRubyObject(JSON.parse(datasetProperties))
+      ),
+      this.mergeObjects(
+        options['options'],
+        this.formatRubyObject(JSON.parse(configurationOptions))
+      )
+    ]
+  } else {
+    return [
+      this.formatRubyObject(JSON.parse(datasetProperties)),
+      this.formatRubyObject(JSON.parse(configurationOptions))
+    ]
+  }
 }
 
 SimpleChart.prototype.buildChart = function(data) {
