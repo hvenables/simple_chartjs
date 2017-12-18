@@ -1,6 +1,5 @@
 require 'json'
 require 'erb'
-
 require 'class_extensions/squish'
 
 module Chartjs

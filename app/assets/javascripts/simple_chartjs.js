@@ -15,7 +15,7 @@ SimpleChart.prototype.assignOptions = function(datasetProperties, configurationO
 SimpleChart.prototype.configureOptions = function(datasetProperties, configurationOptions) {
   var optionMethod = this.ctx.dataset['options']
 
-  if(typeof(optionMethod) != "undefined") {
+  if(typeof(optionMethod) != "undefined" && typeof(this[this.kebabCaseToCamelCase(optionMethod) + "Options"]) != "undefined") {
     var options = this[this.kebabCaseToCamelCase(optionMethod) + "Options"]();
 
     return [
