@@ -1,45 +1,30 @@
 function SimpleChart(type, id, url, width, height, datasetProperties, configurationOptions) {
-  this.ctx         = document.getElementById(id);
-  this.chartType   = type;
-  this.url         = url;
-  this.width       = width
-  this.height      = height
-
-  this.assignOptions(datasetProperties, configurationOptions);
+  this.ctx                  = document.getElementById(id);
+  this.chartType            = type;
+  this.url                  = url;
+  this.width                = width
+  this.height               = height
+  this.datasetProperties    = datasetProperties
+  this.configurationOptions = configurationOptions
 }
 
-SimpleChart.prototype.assignOptions = function(datasetProperties, configurationOptions) {
-  [this.datasetProperties, this.configurationOptions] = this.configureOptions(datasetProperties, configurationOptions)
-}
+SimpleChart.prototype.createChart = function() {
+  var chart = this
 
-SimpleChart.prototype.configureOptions = function(datasetProperties, configurationOptions) {
-  var optionMethod = this.ctx.dataset['options']
-
-  if(typeof(optionMethod) != "undefined" && typeof(this[this.kebabCaseToCamelCase(optionMethod) + "Options"]) != "undefined") {
-
-    return [
-      this.configureOption('datasetProperties', JSON.parse(datasetProperties), optionMethod),
-      this.configureOption('options', JSON.parse(configurationOptions), optionMethod)
-    ]
-  } else {
-    return [
-      this.formatRubyObject(JSON.parse(datasetProperties)),
-      this.formatRubyObject(JSON.parse(configurationOptions))
-    ]
+  var xhr = new XMLHttpRequest();
+  xhr.open('GET', chart.url);
+  xhr.setRequestHeader("Content-Type", "application/json");
+  xhr.onreadystatechange = function() {
+    if(xhr.readyState === 4) {
+      chart.assignOptions();
+      if(xhr.status === 200) {
+        chart.buildChart(xhr.response)
+      } else {
+        console.log('An error occurred during your xhr: ' +  xhr.status + ' ' + xhr.statusText);
+      }
+    }
   }
-}
-
-SimpleChart.prototype.configureOption = function(option_name, current_options, optionMethod) {
-  var options = this[this.kebabCaseToCamelCase(optionMethod) + "Options"]()[option_name];
-
-  if(typeof(options) != "undefined") {
-    return this.mergeObjects(
-      options,
-      this.formatRubyObject(current_options)
-    )
-  } else {
-    return this.formatRubyObject(current_options)
-  }
+  xhr.send();
 }
 
 SimpleChart.prototype.buildChart = function(data) {
@@ -55,23 +40,38 @@ SimpleChart.prototype.buildChart = function(data) {
   });
 }
 
-SimpleChart.prototype.createChart = function() {
-  var chart = this
+SimpleChart.prototype.assignOptions = function() {
+  [this.datasetProperties, this.configurationOptions] = this.configureOptions()
+}
 
-  var xhr = new XMLHttpRequest();
-  xhr.open('GET', chart.url);
-  xhr.setRequestHeader("Content-Type", "application/json");
-  xhr.onreadystatechange = function() {
-    if(xhr.readyState === 4) {
-      console.log("loading")
-      if(xhr.status === 200) {
-        chart.buildChart(xhr.response)
-      } else {
-        console.log('An error occurred during your xhr: ' +  xhr.status + ' ' + xhr.statusText);
-      }
-    }
+SimpleChart.prototype.configureOptions = function() {
+  var optionMethod = this.ctx.dataset['options']
+
+  if(typeof(optionMethod) != "undefined" && typeof(this[this.kebabCaseToCamelCase(optionMethod) + "Options"]) != "undefined") {
+
+    return [
+      this.configureOption('datasetProperties', JSON.parse(this.datasetProperties), optionMethod),
+      this.configureOption('options', JSON.parse(this.configurationOptions), optionMethod)
+    ]
+  } else {
+    return [
+      this.formatRubyObject(JSON.parse(this.datasetProperties)),
+      this.formatRubyObject(JSON.parse(this.configurationOptions))
+    ]
   }
-  xhr.send();
+}
+
+SimpleChart.prototype.configureOption = function(option_name, current_options, optionMethod) {
+  var options = this[this.kebabCaseToCamelCase(optionMethod) + "Options"]()[option_name];
+
+  if(typeof(options) != "undefined") {
+    return this.mergeObjects(
+      options,
+      this.formatRubyObject(current_options)
+    )
+  } else {
+    return this.formatRubyObject(current_options)
+  }
 }
 
 SimpleChart.prototype.formatChartData = function(data) {
