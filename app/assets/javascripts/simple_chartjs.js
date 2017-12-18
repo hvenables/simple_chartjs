@@ -15,10 +15,12 @@ SimpleChart.prototype.createChart = function() {
   xhr.open('GET', chart.url);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.onreadystatechange = function() {
-    if(xhr.readyState === 4) {
+    if(xhr.readyState === 2) {
       chart.assignOptions();
+    }
+    if(xhr.readyState === 4) {
       if(xhr.status === 200) {
-        chart.buildChart(xhr.response)
+        chart.buildChart(xhr.response);
       } else {
         console.log('An error occurred during your xhr: ' +  xhr.status + ' ' + xhr.statusText);
       }
@@ -48,7 +50,6 @@ SimpleChart.prototype.configureOptions = function() {
   var optionMethod = this.ctx.dataset['options']
 
   if(typeof(optionMethod) != "undefined" && typeof(this[this.kebabCaseToCamelCase(optionMethod) + "Options"]) != "undefined") {
-
     return [
       this.configureOption('datasetProperties', JSON.parse(this.datasetProperties), optionMethod),
       this.configureOption('options', JSON.parse(this.configurationOptions), optionMethod)
