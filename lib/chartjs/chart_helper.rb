@@ -1,8 +1,12 @@
 require 'json'
 require 'erb'
 
+require 'class_extensions/squish'
+
 module Chartjs
   module ChartHelper
+    using Squish
+
     CHART_TYPES = %i[
       line bar radar doughnut pie polar_area bubble scatter area mixed
     ].freeze
@@ -26,7 +30,7 @@ module Chartjs
         html_options[:data]
       )
 
-      script = <<-JS.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
+      script = <<-JS.squish
         <script type="text/javascript">
           (function() {
             var initChart = function() {
@@ -69,8 +73,8 @@ module Chartjs
     end
 
     def chart_template(id, klass, width, height, data)
-      <<-DIV.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
-        <div id='#{ERB::Util.html_escape(id)}' class='#{ERB::Util.html_escape(klass)}' #{data_attributes(data)} #{chart_styling(width, height)}>
+      <<-DIV.squish
+        <div id="#{ERB::Util.html_escape(id)}" class="#{ERB::Util.html_escape(klass)}" #{data_attributes(data)} #{chart_styling(width, height)}>
           Loading...
         </div>
       DIV
@@ -80,8 +84,8 @@ module Chartjs
       width = ERB::Util.html_escape(width)
       height = ERB::Util.html_escape(height)
 
-      <<-CSS.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
-        style='
+      <<-CSS.squish
+        style="
           #{'width: ' + width + ';' if width}
           #{'height: ' + height + ';' if height}
           text-align: center;
@@ -89,7 +93,7 @@ module Chartjs
           font-size: 14px;
           font-family: Verdana;
           line-height: #{height}
-        '
+        "
       CSS
     end
 
