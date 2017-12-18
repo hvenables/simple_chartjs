@@ -16,23 +16,29 @@ SimpleChart.prototype.configureOptions = function(datasetProperties, configurati
   var optionMethod = this.ctx.dataset['options']
 
   if(typeof(optionMethod) != "undefined" && typeof(this[this.kebabCaseToCamelCase(optionMethod) + "Options"]) != "undefined") {
-    var options = this[this.kebabCaseToCamelCase(optionMethod) + "Options"]();
 
     return [
-      this.mergeObjects(
-        options['datasetProperties'],
-        this.formatRubyObject(JSON.parse(datasetProperties))
-      ),
-      this.mergeObjects(
-        options['options'],
-        this.formatRubyObject(JSON.parse(configurationOptions))
-      )
+      this.configureOption('datasetProperties', JSON.parse(datasetProperties), optionMethod),
+      this.configureOption('options', JSON.parse(configurationOptions), optionMethod)
     ]
   } else {
     return [
       this.formatRubyObject(JSON.parse(datasetProperties)),
       this.formatRubyObject(JSON.parse(configurationOptions))
     ]
+  }
+}
+
+SimpleChart.prototype.configureOption = function(option_name, current_options, optionMethod) {
+  var options = this[this.kebabCaseToCamelCase(optionMethod) + "Options"]()[option_name];
+
+  if(typeof(options) != "undefined") {
+    return this.mergeObjects(
+      options,
+      this.formatRubyObject(current_options)
+    )
+  } else {
+    return this.formatRubyObject(current_options)
   }
 }
 
@@ -96,11 +102,16 @@ SimpleChart.prototype.formatArrayRubyObjects = function(array) {
 
 SimpleChart.prototype.formatRubyObject = function(object) {
   for (property in object) {
+    if(property === 'data' || property === 'label') { continue; }
     value   = object[property]
     delete object[property]
 
     newKey = this.snakeCaseToCamelCase(property)
     object[newKey] = value
+
+    if(typeof(object[newKey]) == "object") {
+      this.formatRubyObject(object[newKey])
+    }
   }
   return object
 }
