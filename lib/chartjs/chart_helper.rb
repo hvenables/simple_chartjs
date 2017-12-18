@@ -1,5 +1,5 @@
 require 'json'
-require 'cgi'
+require 'erb'
 
 module Chartjs
   module ChartHelper
@@ -60,10 +60,26 @@ module Chartjs
 
     def chart_template(id, klass, width, height)
       <<-DIV.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
-        <div id=#{CGI.escapeHTML(id)} class=#{CGI.escapeHTML(klass)} style='#{'width: ' + CGI.escapeHTML(width) + ';' if width} #{'height: ' + CGI.escapeHTML(height) + ';' if height}'>
+        <div id=#{ERB::Util.html_escape(id)} class=#{ERB::Util.html_escape(klass)} #{chart_styling(width, height)}>
           Loading...
-        </div>"
+        </div>
       DIV
+    end
+
+    def chart_styling(width, height)
+      width = ERB::Util.html_escape(width) if width
+      height = ERB::Util.html_escape(height) if height
+
+      <<-CSS.gsub(/(?:\A[[:space:]]+|[[:space:]]+\z)/, '').gsub(/[[:space:]]+/, ' ')
+        style='
+          #{'width: ' + width + ';' if width}
+          #{'height: ' + height + ';' if height}
+          text-align: center;
+          color: #999;
+          font-size: 14px;
+          font-family: Verdana;
+        '
+      CSS
     end
   end
 end
