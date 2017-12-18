@@ -18,7 +18,7 @@ In `application.js`, add:
 
 ```javascript
 //= require Chart.bundle
-//= require chartkick
+//= require simple_chartjs
 ```
 
 And then execute:
