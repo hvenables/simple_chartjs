@@ -38,9 +38,10 @@ module Chartjs
                 '#{type}',
                 '#{html_options[:id]}',
                 '#{url}',
+                '#{html_options[:width]}',
+                '#{html_options[:height]}',
                 '#{dataset_properties.to_json}',
-                '#{options.to_json}',
-                '#{html_options.to_json}'
+                '#{options.to_json}'
               ).createChart();
             };
 

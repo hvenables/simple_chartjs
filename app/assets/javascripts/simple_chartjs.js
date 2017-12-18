@@ -1,8 +1,9 @@
-function SimpleChart(type, id, url, datasetProperties, configurationOptions, HTMLOptions) {
+function SimpleChart(type, id, url, width, height, datasetProperties, configurationOptions) {
   this.ctx         = document.getElementById(id);
   this.chartType   = type;
   this.url         = url;
-  this.HTMLOptions = JSON.parse(HTMLOptions)
+  this.width       = width
+  this.height      = height
 
   this.assignOptions(datasetProperties, configurationOptions);
 }
@@ -123,11 +124,9 @@ SimpleChart.prototype.mergeObjects = function(obj, src) {
 
 SimpleChart.prototype.canvas = function() {
   var canvas = '<canvas'
-  if(this.HTMLOptions.hasOwnProperty('width')) {
-    canvas += (this.HTMLOptions.width == '100%' ? ' width="'+ this.ctx.clientWidth + '"' : ' width="' + this.HTMLOptions.width.replace(/px/, '') + '"');
-  }
-  if(this.HTMLOptions.hasOwnProperty('height')) canvas = canvas + ' height="' + this.HTMLOptions.height.replace(/px/, '') + '"'
-  canvas = canvas + '></canvas>'
+  canvas += (this.width == '100%' ? ' width="'+ this.ctx.clientWidth + '"' : ' width="' + this.width.replace(/px/, '') + '"');
+  canvas += ' height="' + this.height.replace(/px/, '') + '"'
+  canvas += '></canvas>'
 
   return canvas
 }
