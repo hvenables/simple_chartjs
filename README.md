@@ -42,7 +42,7 @@ end
 ```
 
 At its simplest a chart can be produced by the following
-```ruby
+```erb
 <%= line_chart           chart_data_path %>
 <%= bar_chart            chart_data_path %>
 <%= horizontal_bar_chart chart_data_path %>
@@ -95,19 +95,74 @@ bar_chart chart_data_path, dataset_properties: { border_width: 4 }
 ```
 
 ##### Javascript/Coffescript
-If you want more control from a javascript perspective you can set a function that the chart will call and add those dataset options. To do this you name a method as a data attribute call options like below.
+If you want more control from a javascript perspective you can set a function that the chart will call and add those dataset properties. To do this you name a method as a data attribute call options like below.
 ```ruby
-bar_chart chart_data_path, data: { options: 'bar-chart' }
+bar_chart chart_data_path, data: { options: 'my-chart' }
 ```
 In the javascript you create a function on SimpleChart
+
+###### javascript
 ```javascript
-SimpleChart.prototype.barChartOptions = function() {
+SimpleChart.prototype.myChartOptions = function() {
   return {
     datasetProperties: {
       borderWidth: 4
+    },
+    options: {...}
+  }
+}
+```
+###### coffeescript
+```coffeescript
+SimpleChart.prototype.myChartOptions = ->
+  {
+    datasetProperties: {
+      borderWidth: 4
+    },
+    options: {...}
+  }
+```
+
+#### Configuration Options
+There are two ways in which the Configuration options can be set.
+
+##### View
+The configuration options can be set in the view like below.
+```ruby
+bar_chart chart_data_path, options: { scales: { x_axes: [{ bar_percentage: 0.2}] } }
+```
+
+##### Javascript/Coffescript
+If you want more control from a javascript perspective you can set a function that the chart will call and add those configuration options. To do this you name a method as a data attribute call options like below.
+```ruby
+bar_chart chart_data_path, data: { options: 'my-chart' }
+```
+In the javascript you create a function on SimpleChart
+
+###### javascript
+```javascript
+SimpleChart.prototype.myChartOptions = function() {
+  return {
+    datasetProperties: {...},
+    options: {
+      scales: {
+        xAxes: [{ barPercentage: 0.2 }]
+      }
     }
   }
 }
+```
+###### coffeescript
+```coffeescript
+SimpleChart.prototype.myChartOptions = ->
+  {
+    datasetProperties: {...},
+    options: {
+      scales: {
+        xAxes: [{ barPercentage: 0.2 }]
+      }
+    }
+  }
 ```
 
 ## Development
