@@ -2,14 +2,14 @@ function SimpleChart(type, id, url, width, height, datasetProperties, configurat
   this.ctx                  = document.getElementById(id);
   this.chartType            = type;
   this.url                  = url;
-  this.width                = width
-  this.height               = height
-  this.datasetProperties    = datasetProperties
-  this.configurationOptions = configurationOptions
+  this.width                = width;
+  this.height               = height;
+  this.datasetProperties    = datasetProperties;
+  this.configurationOptions = configurationOptions;
 }
 
 SimpleChart.prototype.createChart = function() {
-  var chart = this
+  var chart = this;
 
   var xhr = new XMLHttpRequest();
   xhr.open('GET', chart.url);
@@ -31,7 +31,7 @@ SimpleChart.prototype.buildChart = function(data) {
   [this.datasetProperties, this.configurationOptions] = this.chartConfiguration();
 
   this.ctx.innerHTML = this.canvas();
-  var canvas = this.ctx.getElementsByTagName('canvas')[0]
+  var canvas = this.ctx.getElementsByTagName('canvas')[0];
 
   var myChart = new Chart(canvas, {
     type: this.chartType,
@@ -85,36 +85,36 @@ SimpleChart.prototype.formatChartData = function(data) {
       }
     }
   }
-  return chartData
+  return chartData;
 }
 
 SimpleChart.prototype.formatArrayRubyObjects = function(array) {
   for (var i = 0; i < array.length; i++) {
-    this.formatRubyObject(array[i])
+    this.formatRubyObject(array[i]);
   }
-  return array
+  return array;
 }
 
 SimpleChart.prototype.formatRubyObject = function(object) {
   for (property in object) {
     if(property === 'data' || property === 'label') { continue; }
-    value   = object[property]
-    delete object[property]
+    value   = object[property];
+    delete object[property];
 
-    newKey = this.convertToCamelCase(property)
-    object[newKey] = value
+    newKey = this.convertToCamelCase(property);
+    object[newKey] = value;
 
     if(typeof(object[newKey]) == "object") {
-      this.formatRubyObject(object[newKey])
+      this.formatRubyObject(object[newKey]);
     }
   }
-  return object
+  return object;
 }
 
 SimpleChart.prototype.convertToCamelCase = function(string) {
   return string.replace(/[-_]([a-z])/, function(_, letter) {
     return letter.toUpperCase();
-  })
+  });
 }
 
 SimpleChart.prototype.mergeObjects = function(obj, src) {
@@ -123,10 +123,10 @@ SimpleChart.prototype.mergeObjects = function(obj, src) {
 }
 
 SimpleChart.prototype.canvas = function() {
-  var canvas = '<canvas'
+  var canvas = '<canvas';
   canvas += ' width="'+ this.ctx.clientWidth + '"';
   canvas += ' height="' + this.ctx.clientHeight + '"';
-  canvas += '></canvas>'
+  canvas += '></canvas>';
 
-  return canvas
+  return canvas;
 }
