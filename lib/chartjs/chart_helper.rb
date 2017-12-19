@@ -7,7 +7,7 @@ module Chartjs
     using Squish
 
     CHART_TYPES = %i[
-      line bar radar doughnut pie polar_area bubble scatter area mixed
+      line bar horizontal_bar radar doughnut pie polar_area bubble scatter area mixed
     ].freeze
 
     CHART_TYPES.each do |chart|
