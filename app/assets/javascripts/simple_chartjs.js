@@ -72,11 +72,15 @@ SimpleChart.prototype.configureOption = function(option_name, current_options, o
 SimpleChart.prototype.formatChartData = function(data) {
   var chartData = data;
   this.formatArrayRubyObjects(chartData.datasets);
-  if(!(Object.keys(this.datasetProperties).length === 0)) {
+  if(Object.keys(this.datasetProperties).length !== 0) {
     for(property in this.datasetProperties) {
       if(Array.isArray(this.datasetProperties[property])) {
-        for (var i = 0; i < this.datasetProperties[property].length; i++) {
+        for (var i = 0; i < chartData.datasets.length; i++) {
           chartData.datasets[i][property] = this.datasetProperties[property][i];
+        }
+      } else if(typeof(this.datasetProperties[property]) === 'function') {
+        for (var i = 0; i < chartData.datasets.length; i++) {
+          chartData.datasets[i][property] = this.datasetProperties[property](chartData.datasets[i]);
         }
       } else {
         for (var i = 0; i < chartData.datasets.length; i++) {
@@ -85,6 +89,7 @@ SimpleChart.prototype.formatChartData = function(data) {
       }
     }
   }
+
   return chartData;
 }
 
