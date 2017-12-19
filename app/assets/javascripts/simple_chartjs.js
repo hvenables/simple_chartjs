@@ -43,7 +43,7 @@ SimpleChart.prototype.buildChart = function(data) {
 SimpleChart.prototype.chartConfiguration = function() {
   var optionMethod = this.ctx.dataset['options']
 
-  if(typeof(optionMethod) != "undefined" && typeof(this[this.kebabCaseToCamelCase(optionMethod) + "Options"]) != "undefined") {
+  if(typeof(optionMethod) != "undefined" && typeof(this[this.convertToCamelCase(optionMethod) + "Options"]) != "undefined") {
     return [
       this.configureOption('datasetProperties', JSON.parse(this.datasetProperties), optionMethod),
       this.configureOption('options', JSON.parse(this.configurationOptions), optionMethod)
@@ -57,7 +57,7 @@ SimpleChart.prototype.chartConfiguration = function() {
 }
 
 SimpleChart.prototype.configureOption = function(option_name, current_options, optionMethod) {
-  var options = this[this.kebabCaseToCamelCase(optionMethod) + "Options"]()[option_name];
+  var options = this[this.convertToCamelCase(optionMethod) + "Options"]()[option_name];
 
   if(typeof(options) != "undefined") {
     return this.mergeObjects(
@@ -101,7 +101,7 @@ SimpleChart.prototype.formatRubyObject = function(object) {
     value   = object[property]
     delete object[property]
 
-    newKey = this.snakeCaseToCamelCase(property)
+    newKey = this.convertToCamelCase(property)
     object[newKey] = value
 
     if(typeof(object[newKey]) == "object") {
@@ -111,15 +111,9 @@ SimpleChart.prototype.formatRubyObject = function(object) {
   return object
 }
 
-SimpleChart.prototype.snakeCaseToCamelCase = function(string) {
-  return string.replace(/_([a-z])/, function(_, letter) {
-    return letter.toUpperCase()
-  })
-}
-
-SimpleChart.prototype.kebabCaseToCamelCase = function(string) {
-  return string.replace(/-([a-z])/, function(_, letter) {
-    return letter.toUpperCase()
+SimpleChart.prototype.convertToCamelCase = function(string) {
+  return string.replace(/[-_]([a-z])/, function(_, letter) {
+    return letter.toUpperCase();
   })
 }
 
