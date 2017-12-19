@@ -1,6 +1,6 @@
 function SimpleChart(type, id, url, width, height, datasetProperties, configurationOptions) {
   this.ctx                  = document.getElementById(id);
-  this.chartType            = type;
+  this.chartType            = this.convertToCamelCase(type);
   this.url                  = url;
   this.width                = width;
   this.height               = height;
