@@ -15,10 +15,7 @@ SimpleChart.prototype.createChart = function() {
   xhr.open('GET', chart.url);
   xhr.setRequestHeader("Content-Type", "application/json");
   xhr.onreadystatechange = function() {
-    if(xhr.readyState === 2) {
-      chart.assignOptions();
-    }
-    if(xhr.readyState === 4) {
+    if(xhr.readyState === XMLHttpRequest.DONE) {
       if(xhr.status === 200) {
         chart.buildChart(xhr.response);
       } else {
@@ -30,7 +27,8 @@ SimpleChart.prototype.createChart = function() {
 }
 
 SimpleChart.prototype.buildChart = function(data) {
-  var data = JSON.parse(data)
+  var data = JSON.parse(data);
+  [this.datasetProperties, this.configurationOptions] = this.chartConfiguration();
 
   this.ctx.innerHTML = this.canvas();
   var canvas = this.ctx.getElementsByTagName('canvas')[0]
@@ -42,11 +40,7 @@ SimpleChart.prototype.buildChart = function(data) {
   });
 }
 
-SimpleChart.prototype.assignOptions = function() {
-  [this.datasetProperties, this.configurationOptions] = this.configureOptions()
-}
-
-SimpleChart.prototype.configureOptions = function() {
+SimpleChart.prototype.chartConfiguration = function() {
   var optionMethod = this.ctx.dataset['options']
 
   if(typeof(optionMethod) != "undefined" && typeof(this[this.kebabCaseToCamelCase(optionMethod) + "Options"]) != "undefined") {
@@ -76,17 +70,17 @@ SimpleChart.prototype.configureOption = function(option_name, current_options, o
 }
 
 SimpleChart.prototype.formatChartData = function(data) {
-  var chartData = data
-  this.formatArrayRubyObjects(chartData.datasets)
+  var chartData = data;
+  this.formatArrayRubyObjects(chartData.datasets);
   if(!(Object.keys(this.datasetProperties).length === 0)) {
     for(property in this.datasetProperties) {
       if(Array.isArray(this.datasetProperties[property])) {
         for (var i = 0; i < this.datasetProperties[property].length; i++) {
-          chartData.datasets[i][property] = this.datasetProperties[property][i]
+          chartData.datasets[i][property] = this.datasetProperties[property][i];
         }
       } else {
         for (var i = 0; i < chartData.datasets.length; i++) {
-          chartData.datasets[i][property] = this.datasetProperties[property]
+          chartData.datasets[i][property] = this.datasetProperties[property];
         }
       }
     }
