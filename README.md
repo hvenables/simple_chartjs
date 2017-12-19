@@ -152,7 +152,6 @@ SimpleChart.prototype.myChartOptions = function() {
   }
 }
 ```
-
 ###### coffeescript
 ```coffeescript
 SimpleChart.prototype.myChartOptions = ->
