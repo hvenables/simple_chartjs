@@ -19,7 +19,8 @@ SimpleChart.prototype.createChart = function() {
       if(xhr.status === 200) {
         chart.buildChart(xhr.response);
       } else {
-        console.log('An error occurred during your xhr: ' +  xhr.status + ' ' + xhr.statusText);
+        chart.ctx.innerText   = "Failed to Load: An Error has Occured"
+        chart.ctx.style.color = "red"
       }
     }
   }
