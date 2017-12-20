@@ -47,14 +47,11 @@ module Chartjs
             if (document.addEventListener) {
               if (typeof(Turbolinks) != 'undefined' && Turbolinks.supported) {
                 document.addEventListener("turbolinks:load", initChart, true);
+                document.addEventListener("turbolinks:before-cache", function() {
+                  document.removeEventListener("turbolinks:load", initChart, true);
+                });
               } else {
                 document.addEventListener("load", initChart, true);
-              }
-            } else if (document.attachEvent) {
-              if (typeof(Turbolinks) != 'undefined' && Turbolinks.supported) {
-                document.attachEvent("turbolinks:load", initChart);
-              } else {
-                document.attachEvent("onload", initChart);
               }
             }
           })();
