@@ -94,14 +94,12 @@ The dataset properties can be set in the view like below.
 bar_chart chart_data_path, dataset_properties: { border_width: 4 }
 ```
 
-##### Javascript/Coffescript
+##### Javascript
 If you want more control from a javascript perspective you can set a function that the chart will call and add those dataset properties. To do this you name a method as a data attribute call options like below.
 ```ruby
 bar_chart chart_data_path, data: { options: 'my-chart' }
 ```
 In the javascript you create a function on SimpleChart
-
-###### javascript
 ```javascript
 SimpleChart.prototype.myChartOptions = function() {
   return {
@@ -112,15 +110,20 @@ SimpleChart.prototype.myChartOptions = function() {
   }
 }
 ```
-###### coffeescript
-```coffeescript
-SimpleChart.prototype.myChartOptions = ->
-  {
+
+If you need to dynamically set a value such as Background Color for each value in the dataset, datasetProperties does support callbacks as shown below. The function will receive one argument, which is the current dataset.
+
+```javascript
+SimpleChart.prototype.myChartOptions = function() {
+  return {
     datasetProperties: {
-      borderWidth: 4
+      backgroundColor: function(data) {
+        ...
+      }
     },
     options: {...}
   }
+}
 ```
 
 #### Configuration Options
@@ -132,14 +135,12 @@ The configuration options can be set in the view like below.
 bar_chart chart_data_path, options: { scales: { x_axes: [{ bar_percentage: 0.2}] } }
 ```
 
-##### Javascript/Coffescript
+##### Javascript
 If you want more control from a javascript perspective you can set a function that the chart will call and add those configuration options. To do this you name a method as a data attribute call options like below.
 ```ruby
 bar_chart chart_data_path, data: { options: 'my-chart' }
 ```
 In the javascript you create a function on SimpleChart
-
-###### javascript
 ```javascript
 SimpleChart.prototype.myChartOptions = function() {
   return {
@@ -152,19 +153,6 @@ SimpleChart.prototype.myChartOptions = function() {
   }
 }
 ```
-###### coffeescript
-```coffeescript
-SimpleChart.prototype.myChartOptions = ->
-  {
-    datasetProperties: {...},
-    options: {
-      scales: {
-        xAxes: [{ barPercentage: 0.2 }]
-      }
-    }
-  }
-```
-
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
