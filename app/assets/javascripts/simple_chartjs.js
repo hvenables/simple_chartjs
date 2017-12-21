@@ -19,17 +19,17 @@ SimpleChart.prototype.createChart = function() {
       if(xhr.status === 200) {
         chart.buildChart(xhr.response);
       } else {
-        chart.ctx.innerText   = "Failed to Load: An Error has Occured"
-        chart.ctx.style.color = "red"
+        chart.ctx.innerText   = "Failed to Load: An Error has Occured";
+        chart.ctx.style.color = "red";
       }
     }
-  }
+  };
   xhr.send();
-}
+};
 
 SimpleChart.prototype.buildChart = function(data) {
   var data = JSON.parse(data);
-  [this.datasetProperties, this.configurationOptions] = this.chartConfiguration();
+  this.chartConfiguration();
 
   this.ctx.innerHTML = this.canvas();
   var canvas = this.ctx.getElementsByTagName('canvas')[0];
@@ -39,23 +39,19 @@ SimpleChart.prototype.buildChart = function(data) {
     data: this.formatChartData(data),
     options: this.configurationOptions
   });
-}
+};
 
 SimpleChart.prototype.chartConfiguration = function() {
-  var optionMethod = this.ctx.dataset['options']
+  var optionMethod = this.ctx.dataset.options;
 
   if(typeof(optionMethod) != "undefined" && typeof(this[this.convertToCamelCase(optionMethod) + "Options"]) != "undefined") {
-    return [
-      this.configureOption('datasetProperties', JSON.parse(this.datasetProperties), optionMethod),
-      this.configureOption('options', JSON.parse(this.configurationOptions), optionMethod)
-    ]
+    this.datasetProperties    = this.configureOption('datasetProperties', JSON.parse(this.datasetProperties), optionMethod);
+    this.configurationOptions = this.configureOption('options', JSON.parse(this.configurationOptions), optionMethod);
   } else {
-    return [
-      this.formatRubyObject(JSON.parse(this.datasetProperties)),
-      this.formatRubyObject(JSON.parse(this.configurationOptions))
-    ]
+    this.datasetProperties    = this.formatRubyObject(JSON.parse(this.datasetProperties));
+    this.configurationOptions = this.formatRubyObject(JSON.parse(this.configurationOptions));
   }
-}
+};
 
 SimpleChart.prototype.configureOption = function(option_name, current_options, optionMethod) {
   var options = this[this.convertToCamelCase(optionMethod) + "Options"]()[option_name];
@@ -64,11 +60,11 @@ SimpleChart.prototype.configureOption = function(option_name, current_options, o
     return this.mergeObjects(
       options,
       this.formatRubyObject(current_options)
-    )
+    );
   } else {
-    return this.formatRubyObject(current_options)
+    return this.formatRubyObject(current_options);
   }
-}
+};
 
 SimpleChart.prototype.formatChartData = function(data) {
   var chartData = data;
@@ -92,14 +88,14 @@ SimpleChart.prototype.formatChartData = function(data) {
   }
 
   return chartData;
-}
+};
 
 SimpleChart.prototype.formatArrayRubyObjects = function(array) {
   for (var i = 0; i < array.length; i++) {
     this.formatRubyObject(array[i]);
   }
   return array;
-}
+};
 
 SimpleChart.prototype.formatRubyObject = function(object) {
   for (property in object) {
@@ -115,18 +111,18 @@ SimpleChart.prototype.formatRubyObject = function(object) {
     }
   }
   return object;
-}
+};
 
 SimpleChart.prototype.convertToCamelCase = function(string) {
   return string.replace(/[-_]([a-z])/, function(_, letter) {
     return letter.toUpperCase();
   });
-}
+};
 
 SimpleChart.prototype.mergeObjects = function(obj, src) {
   Object.keys(src).forEach(function(key) { obj[key] = src[key]; });
   return obj;
-}
+};
 
 SimpleChart.prototype.canvas = function() {
   var canvas = '<canvas';
@@ -135,4 +131,4 @@ SimpleChart.prototype.canvas = function() {
   canvas += '></canvas>';
 
   return canvas;
-}
+};
