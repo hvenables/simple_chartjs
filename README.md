@@ -16,8 +16,22 @@ gem 'simple_chartjs'
 
 In `application.js`, add:
 
+Choose the appropriate ChartJS file depending on if you want it bundled with
+MomentJS:
+
+- Without Moment.js:
+  ```javascript
+  //= require Chart.min
+  ```
+
+- With Moment.js:
+  ```javascript
+  //= require Chart.bundle.min
+  ```
+
+Then require the simple_chartjs file
+
 ```javascript
-//= require Chart.bundle
 //= require simple_chartjs
 ```
 
