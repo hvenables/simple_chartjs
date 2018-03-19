@@ -21,12 +21,12 @@ MomentJS:
 
 - Without Moment.js:
   ```javascript
-  //= require Chart.min
+  //= require Chart
   ```
 
 - With Moment.js:
   ```javascript
-  //= require Chart.bundle.min
+  //= require Chart.bundle
   ```
 
 Then require the simple_chartjs file
