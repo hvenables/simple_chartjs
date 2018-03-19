@@ -49,8 +49,20 @@ For faster load times simple chartjs expects you to have controllers and routes 
 
 ```ruby
 class ChartsController < ApplicationController
+  def show
+    render json: chart_data.to_json
+  end
+
+  private
+
   def chart_data
-    render json: Model.group_by_day(:completed_at).count
+    {
+      datasets: [{
+        data: [...],
+        background_color: [...]
+      }],
+      labels: [...]
+    }
   end
 end
 ```
