@@ -57,9 +57,7 @@ class ChartsController < ApplicationController
 
   def chart_data
     {
-      datasets: [
-        { data: [...] }
-      ],
+      datasets: [{ data: [...] }],
       labels: [...]
     }
   end
