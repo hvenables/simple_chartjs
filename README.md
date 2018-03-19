@@ -69,15 +69,15 @@ end
 
 At its simplest a chart can be produced by the following
 ```erb
-<%= line_chart           chart_data_path %>
-<%= bar_chart            chart_data_path %>
-<%= horizontal_bar_chart chart_data_path %>
-<%= radar_chart          chart_data_path %>
-<%= polar_area_chart     chart_data_path %>
-<%= pie_chart            chart_data_path %>
-<%= doughnut_chart       chart_data_path %>
-<%= bubble_chart         chart_data_path %>
-<%= scatter_chart        chart_data_path %>
+<%= line_chart           chart_path %>
+<%= bar_chart            chart_path %>
+<%= horizontal_bar_chart chart_path %>
+<%= radar_chart          chart_path %>
+<%= polar_area_chart     chart_path %>
+<%= pie_chart            chart_path %>
+<%= doughnut_chart       chart_path %>
+<%= bubble_chart         chart_path %>
+<%= scatter_chart        chart_path %>
 ```
 
 ### HTML Options
