@@ -114,7 +114,7 @@ SimpleChart.prototype.formatRubyObject = function(object) {
 };
 
 SimpleChart.prototype.convertToCamelCase = function(string) {
-  return string.replace(/[-_]([a-z])/, function(_, letter) {
+  return string.replace(/[-_]([a-z])/g, function(_, letter) {
     return letter.toUpperCase();
   });
 };
