@@ -4,7 +4,7 @@ Simple Ruby wrapper for using [ChartJS](http://www.chartjs.org/)
 
 ## Current ChartJS version
 
-Includes - [2.7.1](https://github.com/chartjs/Chart.js/releases/tag/v2.7.1)
+Includes - [2.7.2](https://github.com/chartjs/Chart.js/releases/tag/v2.7.2)
 
 ## Installation
 
